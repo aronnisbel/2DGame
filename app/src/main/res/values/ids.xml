@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="play_button" type="id"/>
+    <item name="menu_button" type="id"/>
+    <item name="my_time_picker_1" type="id"/>
+    <item name="biege_alien" type="id"/>
+    <item name="blue_alien" type="id"/>
+    <item name="green_alien" type="id"/>
+    <item name="pink_alien" type="id"/>
+    <item name="yellow_alien" type="id"/>
+    <item name="easy" type="id"/>
+    <item name="medium" type="id"/>
+    <item name="hard" type="id"/>
+    <item name="insane" type="id"/>
+    <item name="extreme" type="id"/>
+</resources>

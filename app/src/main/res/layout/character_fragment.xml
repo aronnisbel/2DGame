@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/difficultyLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="interactiondesign.arni0010.umu.se.a2dgame.CharacterFragment">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/new_linearImagesLayout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+    <ImageView
+        android:id="@id/biege_alien"
+        android:contentDescription="@string/description_biege_alien"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/biegealien" />
+
+    <ImageView
+        android:id="@id/blue_alien"
+        android:contentDescription="@string/description_blue_alien"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/bluealien" />
+
+    <ImageView
+        android:id="@id/green_alien"
+        android:contentDescription="@string/description_green_alien"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/greenalien" />
+
+    <ImageView
+        android:id="@id/pink_alien"
+        android:contentDescription="@string/description_pink_alien"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/pinkalien" />
+
+        <ImageView
+            android:id="@id/yellow_alien"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:contentDescription="@string/description_yellow_alien"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/yellowalien" />
+
+    </LinearLayout>
+
+</RelativeLayout>

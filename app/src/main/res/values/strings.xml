@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Flyvoid</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="title_start">Start</string>
+    <string name="title_character">Character</string>
+    <string name="title_difficulty">Difficulty</string>
+    <string name="title_play">Play</string>
+    <string name="description_biege_alien">Biege Alien</string>
+    <string name="description_blue_alien">Blue Alien</string>
+    <string name="description_green_alien">Green Alien</string>
+    <string name="description_pink_alien">Pink Alien</string>
+    <string name="description_yellow_alien">Yellow Alien</string>
+</resources>
