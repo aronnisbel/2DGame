@@ -16,26 +16,21 @@ public class GameplayScene implements Scene {
 
     private Rect r = new Rect();
 
-    private Paint paintGameOver = new Paint();
-
     private RectPlayer player;
     private Point playerPoint;
     private ObstacleManager obstacleManager;
 
-    private boolean movingPlayer = false;
-
-    private boolean gameOver = Constantsv1.GAMEOVER;
-    private long gameOverTime;
+    private boolean gameOver;
 
     private OrientationData orientationData;
     private long frameTime;
     private float speed;
 
-    public boolean restore = false;
     public long restoredCurrentTime;
 
     private int width;
     private int height;
+    private int highscore;
 
     /**
      * Creates a player as a RectPlayer and a point on which the player always will start. The
@@ -50,6 +45,8 @@ public class GameplayScene implements Scene {
         playerPoint = new Point(width/2, 3* height/4);
         player.update(playerPoint);
 
+        highscore = Constants.HIGHSCORE;
+
         speed = 0;
 
         initializeObstacleManager();
@@ -63,9 +60,7 @@ public class GameplayScene implements Scene {
      * Restores the state of the class.
      */
     public GameplayScene(Bundle savedInstanceState, Context context){
-
-        this.restore = true;
-
+        
         int x = savedInstanceState.getInt("PlayerX");
         int y = savedInstanceState.getInt("PlayerY");
         restoredCurrentTime = savedInstanceState.getLong("RestoredCurrentTime");
@@ -73,6 +68,8 @@ public class GameplayScene implements Scene {
         player = new RectPlayer((Rect)savedInstanceState.getParcelable("Rect"), context);
         playerPoint = new Point(x, y);
         player.update(playerPoint);
+
+        highscore = Constants.HIGHSCORE;
 
         speed = 0;
 
@@ -111,8 +108,6 @@ public class GameplayScene implements Scene {
         player.update(playerPoint);
 
         initializeObstacleManager();
-
-        movingPlayer = false;
     }
 
     /**
@@ -146,7 +141,7 @@ public class GameplayScene implements Scene {
 
                     reset();
                     gameOver = false;
-                    Constantsv1.GAMEOVER = false;
+                    Constants.GAMEOVER = false;
                     orientationData.newGame();
                     orientationData.register();
                 }
@@ -169,17 +164,22 @@ public class GameplayScene implements Scene {
         player.draw(canvas);
         obstacleManager.draw(canvas);
 
-        if(Constantsv1.GAMEOVER){
+        if(Constants.GAMEOVER){
 
             Paint paintHighscore = new Paint();
             paintHighscore.setTextSize(100);
             paintHighscore.setColor(Color.CYAN);
-            drawHighscoreText(canvas, paintHighscore, "Highscore: " + Constantsv1.HIGHSCORE);
+            drawText(canvas, paintHighscore, "Highscore: " + highscore, -300);
 
             Paint paintGameOver = new Paint();
             paintGameOver.setTextSize(100);
             paintGameOver.setColor(Color.MAGENTA);
-            drawGameOverText(canvas, paintGameOver, "Game Over");
+            drawText(canvas, paintGameOver, "Game Over", 0);
+
+            Paint paintRestart = new Paint();
+            paintRestart.setTextSize(100);
+            paintRestart.setColor(Color.WHITE);
+            drawText(canvas, paintRestart, "Touch to restart", 300);
         }
     }
 
@@ -194,16 +194,11 @@ public class GameplayScene implements Scene {
 
         if(!gameOver) {
 
-            if(frameTime < Constantsv1.INIT_TIME)
-                frameTime = Constantsv1.INIT_TIME;
+            if(frameTime < Constants.INIT_TIME)
+                frameTime = Constants.INIT_TIME;
 
             int elapsedTime = (int) (System.currentTimeMillis() - frameTime);
             frameTime = System.currentTimeMillis();
-
-            /*if(restore) {
-                elapsedTime = (int) (restoredCurrentTime - frameTime);
-                frameTime = restoredCurrentTime;
-            }*/
 
             if(orientationData.getOrientation() != null && orientationData.getStartOrientation()
                     != null) {
@@ -236,42 +231,22 @@ public class GameplayScene implements Scene {
             if(obstacleManager.playerCollide(player)){
 
                 gameOver = true;
-                gameOverTime = System.currentTimeMillis();
-                Constantsv1.GAMEOVER = true;
+                Constants.GAMEOVER = true;
                 orientationData.pause();
             }
         }
     }
 
     /**
-     * Aligns the text to the center of the layout and then changes float y to set the text a
-     * bit higher up the screen.
+     * Aligns the text to the center of the layout and then moves it vertically depending on the
+     * padding value.
      * @param canvas The canvas on which everything is drawn.
      * @param paint the Paint.
      * @param text The text which is about to be drawn.
+     * @param padding The int value to move the text vertically, negative value moves it up and
+     *                positive moves it down. Zero leaves it centered.
      */
-    private void drawHighscoreText(Canvas canvas, Paint paint, String text){
-
-        paint.setTextAlign(Paint.Align.LEFT);
-        canvas.getClipBounds(r);
-        float cHeight = r.height();
-        int cWidth = r.width();
-        paint.getTextBounds(text, 0, text.length(), r);
-        float x = cWidth / 2f - r.width() / 2f - r.left;
-        float y = cHeight / 2f + r.height() / 2f - r.bottom;
-
-        //This makes the text go higher up the screen.
-        y -= 300;
-        canvas.drawText(text, x, y, paint);
-    }
-
-    /**
-     * Aligns the text to the center of the layout.
-     * @param canvas The canvas on which everything is drawn.
-     * @param paint the Paint.
-     * @param text The text which is about to be drawn.
-     */
-    private void drawGameOverText(Canvas canvas, Paint paint, String text) {
+    private void drawText(Canvas canvas, Paint paint, String text, int padding) {
 
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.getClipBounds(r);
@@ -280,6 +255,9 @@ public class GameplayScene implements Scene {
         paint.getTextBounds(text, 0, text.length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
         float y = cHeight / 2f + r.height() / 2f - r.bottom;
+
+        //Moves the text vertically.
+        y += padding;
         canvas.drawText(text, x, y, paint);
     }
 
@@ -291,7 +269,7 @@ public class GameplayScene implements Scene {
      */
     private void initializeObstacleManager(){
 
-        switch(Constantsv1.DIFFICULTY){
+        switch(Constants.DIFFICULTY){
             case 0:
                 obstacleManager = new ObstacleManager(400, 600, 75, Color.BLACK, 10000.0f, width,
                         height);

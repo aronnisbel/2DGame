@@ -6,7 +6,7 @@ import android.content.Context;
  * Creates variables to be used at different places at different states of the app and making
  * them easy to get.
  */
-public class Constantsv1 {
+public class Constants {
 
     public static int HIGHSCORE, MENU_HEIGHT, CHOSEN_CHARACTER,
             DIFFICULTY;

@@ -42,7 +42,7 @@ public class DifficultyFragment extends Fragment{
         extreme = (ImageView)view.findViewById(R.id.extreme);
 
 
-        switch (Constantsv1.DIFFICULTY){
+        switch (Constants.DIFFICULTY){
 
             case 0:
                 easy.setBackgroundColor(getResources().getColor(R.color.colorMarker));
@@ -84,7 +84,7 @@ public class DifficultyFragment extends Fragment{
             @Override
             public void onClick(View view) {
 
-                Constantsv1.DIFFICULTY = 0;
+                Constants.DIFFICULTY = 0;
                 main.setDifficultyIcon();
                 easy.setBackgroundColor(getResources().getColor(R.color.colorMarker));
                 medium.setBackgroundColor(view.getSolidColor());
@@ -98,7 +98,7 @@ public class DifficultyFragment extends Fragment{
             @Override
             public void onClick(View view) {
 
-                Constantsv1.DIFFICULTY = 1;
+                Constants.DIFFICULTY = 1;
                 main.setDifficultyIcon();
                 medium.setBackgroundColor(getResources().getColor(R.color.colorMarker));
                 easy.setBackgroundColor(view.getSolidColor());
@@ -112,7 +112,7 @@ public class DifficultyFragment extends Fragment{
             @Override
             public void onClick(View view) {
 
-                Constantsv1.DIFFICULTY = 2;
+                Constants.DIFFICULTY = 2;
                 main.setDifficultyIcon();
                 hard.setBackgroundColor(getResources().getColor(R.color.colorMarker));
                 medium.setBackgroundColor(view.getSolidColor());
@@ -126,7 +126,7 @@ public class DifficultyFragment extends Fragment{
             @Override
             public void onClick(View view) {
 
-                Constantsv1.DIFFICULTY = 3;
+                Constants.DIFFICULTY = 3;
                 main.setDifficultyIcon();
                 insane.setBackgroundColor(getResources().getColor(R.color.colorMarker));
                 medium.setBackgroundColor(view.getSolidColor());
@@ -140,7 +140,7 @@ public class DifficultyFragment extends Fragment{
             @Override
             public void onClick(View view) {
 
-                Constantsv1.DIFFICULTY = 4;
+                Constants.DIFFICULTY = 4;
                 main.setDifficultyIcon();
                 extreme.setBackgroundColor(getResources().getColor(R.color.colorMarker));
                 medium.setBackgroundColor(view.getSolidColor());

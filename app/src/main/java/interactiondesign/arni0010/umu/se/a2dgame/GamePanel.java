@@ -32,6 +32,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         setFocusable(true);
     }
 
+    /**
+     * Restores the state of the class after the GameActivity have been destroyed and re-opened.
+     * @param context the current context.
+     * @param savedInstanceState the bundle with all the saved data.
+     */
     public GamePanel(Context context, Bundle savedInstanceState){
 
         super(context);
@@ -45,8 +50,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         setFocusable(true);
     }
 
+    /**
+     * @return the SceneManager.
+     */
     public SceneManager getSceneManager(){ return manager; }
 
+    /**
+     * Sends the call to save data further down the class tree.
+     * @param outState the bundle to save the data in.
+     */
     public void getData(Bundle outState){ manager.getData(outState); }
 
     /**
@@ -77,7 +89,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
         thread = new MainThread(getHolder(), this);
 
-        Constantsv1.INIT_TIME = System.currentTimeMillis();
+        Constants.INIT_TIME = System.currentTimeMillis();
 
         thread.setRunning(true);
         thread.start();

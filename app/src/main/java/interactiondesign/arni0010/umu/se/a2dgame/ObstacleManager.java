@@ -66,9 +66,8 @@ public class ObstacleManager {
         this.color = savedInstanceState.getInt("color");
         this.gameSpeed = savedInstanceState.getFloat("gameSpeed");
 
-        startTime = savedInstanceState.getInt("StartTime");
-        initTime = savedInstanceState.getInt("InitTime");
-        restoredCurrentTime = savedInstanceState.getInt("RestoredCurrentTime");
+        startTime = savedInstanceState.getLong("startTime");
+        initTime = savedInstanceState.getLong("initTime");
         int size = savedInstanceState.getInt("size");
         obstacles = new ArrayList<>();
 
@@ -140,7 +139,7 @@ public class ObstacleManager {
 
         int currY = -5* height/4;
 
-        while(currY < Constantsv1.MENU_HEIGHT){
+        while(currY < Constants.MENU_HEIGHT){
 
             int xStart = (int)(Math.random()*(width - playerGap));
 
@@ -179,9 +178,9 @@ public class ObstacleManager {
             score ++;
         }
 
-        if(score > Constantsv1.HIGHSCORE){
+        if(score > Constants.HIGHSCORE){
 
-            Constantsv1.HIGHSCORE = score;
+            Constants.HIGHSCORE = score;
         }
 
     }

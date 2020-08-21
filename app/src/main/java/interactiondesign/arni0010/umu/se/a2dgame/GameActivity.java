@@ -50,13 +50,14 @@ public class GameActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         gamePanel.getData(outState);
-        outState.putInt("Highscore", Constantsv1.HIGHSCORE);
-        outState.putInt("Character", Constantsv1.CHOSEN_CHARACTER);
-        outState.putInt("Difficulty", Constantsv1.DIFFICULTY);
-        outState.putLong("Time", Constantsv1.INIT_TIME);
-        outState.putBoolean("Gameover", Constantsv1.GAMEOVER);
-        outState.putInt("Menu", Constantsv1.MENU_HEIGHT);
+        outState.putInt("Highscore", Constants.HIGHSCORE);
+        outState.putInt("Character", Constants.CHOSEN_CHARACTER);
+        outState.putInt("Difficulty", Constants.DIFFICULTY);
+        outState.putLong("Time", Constants.INIT_TIME);
+        outState.putBoolean("Gameover", Constants.GAMEOVER);
+        outState.putInt("Menu", Constants.MENU_HEIGHT);
         gamePanel.getSceneManager().getGameplayScene().getOrientationData().pause();
+        System.out.println("Save: "+ Constants.HIGHSCORE);
     }
 
     /**
@@ -67,6 +68,9 @@ public class GameActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
+        System.out.println("Restore: "+ Constants.HIGHSCORE);
+        Constants.HIGHSCORE = savedInstanceState.getInt("Highscore");
+        System.out.println("Restore-2: "+ Constants.HIGHSCORE);
         gamePanel = new GamePanel(this, savedInstanceState);
     }
 

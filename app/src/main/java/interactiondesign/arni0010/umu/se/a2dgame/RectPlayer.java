@@ -52,7 +52,7 @@ public class RectPlayer implements GameObject, Parcelable {
         walk2 = bf.decodeResource(context.getResources(), R.drawable
                 .alienbeige_walk2);
 
-        switch(Constantsv1.CHOSEN_CHARACTER) {
+        switch(Constants.CHOSEN_CHARACTER) {
 
             case 1:
                 idleImg = bf.decodeResource(context.getResources(), R.drawable

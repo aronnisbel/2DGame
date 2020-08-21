@@ -46,7 +46,7 @@ public class CharacterFragment extends Fragment{
         pinkAlien = (ImageView)view.findViewById(R.id.pink_alien);
         yellowAlien = (ImageView)view.findViewById(R.id.yellow_alien);
 
-        switch (Constantsv1.CHOSEN_CHARACTER){
+        switch (Constants.CHOSEN_CHARACTER){
 
             case 0:
                 biegeAlien.setBackgroundColor(getResources().getColor(R.color.colorMarker));
@@ -91,7 +91,7 @@ public class CharacterFragment extends Fragment{
             public void onClick(View view) {
 
                 normalizeImages();
-                Constantsv1.CHOSEN_CHARACTER = 0;
+                Constants.CHOSEN_CHARACTER = 0;
                 biegeAlien.setImageResource(R.drawable.alienbeige_jump);
                 biegeAlien.setBackgroundColor(getResources().getColor(R.color.colorMarker));
             }
@@ -102,7 +102,7 @@ public class CharacterFragment extends Fragment{
             public void onClick(View view) {
 
                 normalizeImages();
-                Constantsv1.CHOSEN_CHARACTER = 1;
+                Constants.CHOSEN_CHARACTER = 1;
                 blueAlien.setImageResource(R.drawable.alienblue_jump);
                 blueAlien.setBackgroundColor(getResources().getColor(R.color.colorMarker));
             }
@@ -113,7 +113,7 @@ public class CharacterFragment extends Fragment{
             public void onClick(View view) {
 
                 normalizeImages();
-                Constantsv1.CHOSEN_CHARACTER = 2;
+                Constants.CHOSEN_CHARACTER = 2;
                 greenAlien.setImageResource(R.drawable.aliengreen_jump);
                 greenAlien.setBackgroundColor(getResources().getColor(R.color.colorMarker));
             }
@@ -124,7 +124,7 @@ public class CharacterFragment extends Fragment{
             public void onClick(View view) {
 
                 normalizeImages();
-                Constantsv1.CHOSEN_CHARACTER = 3;
+                Constants.CHOSEN_CHARACTER = 3;
                 pinkAlien.setImageResource(R.drawable.alienpink_jump);
                 pinkAlien.setBackgroundColor(getResources().getColor(R.color.colorMarker));
             }
@@ -135,7 +135,7 @@ public class CharacterFragment extends Fragment{
             public void onClick(View view) {
 
                 normalizeImages();
-                Constantsv1.CHOSEN_CHARACTER = 4;
+                Constants.CHOSEN_CHARACTER = 4;
                 yellowAlien.setImageResource(R.drawable.alienyellow_jump);
                 yellowAlien.setBackgroundColor(getResources().getColor(R.color.colorMarker));
             }
