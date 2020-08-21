@@ -1,18 +1,18 @@
 package interactiondesign.arni0010.umu.se.a2dgame;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.MotionEvent;
-
-import static interactiondesign.arni0010.umu.se.a2dgame.MainThread.canvas;
 
 /**
  * Draws the game to the Canvas.
  */
-public class GameplayScene implements Scene{
+public class GameplayScene implements Scene {
 
     private Rect r = new Rect();
 
@@ -24,30 +24,81 @@ public class GameplayScene implements Scene{
 
     private boolean movingPlayer = false;
 
-    private boolean gameOver = Constants.GAMEOVER;
+    private boolean gameOver = Constantsv1.GAMEOVER;
     private long gameOverTime;
 
     private OrientationData orientationData;
     private long frameTime;
     private float speed;
 
+    public boolean restore = false;
+    public long restoredCurrentTime;
+
+    private int width;
+    private int height;
+
     /**
      * Creates a player as a RectPlayer and a point on which the player always will start. The
      * constructor also initializes the ObstacleManager and the OrientationData.
      */
-    public GameplayScene(){
+    public GameplayScene(int width, int height, Context context){
 
-        player = new RectPlayer(new Rect(100, 100, 200, 200));
-        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
+        this.width = width;
+        this.height = height;
+
+        player = new RectPlayer(new Rect(100, 100, 200, 200), context);
+        playerPoint = new Point(width/2, 3* height/4);
         player.update(playerPoint);
 
         speed = 0;
 
         initializeObstacleManager();
 
-        orientationData = new OrientationData();
+        orientationData = new OrientationData(context);
         orientationData.register();
         frameTime = System.currentTimeMillis();
+    }
+
+    /**
+     * Restores the state of the class.
+     */
+    public GameplayScene(Bundle savedInstanceState, Context context){
+
+        this.restore = true;
+
+        int x = savedInstanceState.getInt("PlayerX");
+        int y = savedInstanceState.getInt("PlayerY");
+        restoredCurrentTime = savedInstanceState.getLong("RestoredCurrentTime");
+
+        player = new RectPlayer((Rect)savedInstanceState.getParcelable("Rect"), context);
+        playerPoint = new Point(x, y);
+        player.update(playerPoint);
+
+        speed = 0;
+
+        obstacleManager = new ObstacleManager(savedInstanceState);
+
+        orientationData = new OrientationData(context);
+        orientationData.register();
+        frameTime = savedInstanceState.getLong("FrameTime");
+    }
+
+    /**
+     * Saves the data from this class to the outState bundle and continues by calling the next
+     * class to save data.
+     * @param outState the soon to be savedInstance bundle.
+     */
+    public void getData(Bundle outState){
+
+        outState.putParcelable("Rect", player.getRectangle());
+        obstacleManager.getData(outState);
+        outState.putInt("PlayerX", player.getRectangle().centerX());
+        outState.putInt("PlayerY", player.getRectangle().centerY());
+        outState.putLong("RestoredCurrentTime", System.currentTimeMillis());
+        outState.putLong("StartTime", obstacleManager.getStartTime());
+        outState.putLong("InitTime", obstacleManager.getInitTime());
+        outState.putLong("FrameTime", frameTime);
+        orientationData.pause();
     }
 
     /**
@@ -56,7 +107,7 @@ public class GameplayScene implements Scene{
      */
     private void reset(){
 
-        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
+        playerPoint = new Point(width/2, 3* height/4);
         player.update(playerPoint);
 
         initializeObstacleManager();
@@ -89,13 +140,13 @@ public class GameplayScene implements Scene{
 
             case MotionEvent.ACTION_DOWN:
 
-                // Add: if(&& System.currentTimeMillis() - gameOverTime >= 200), if game start delay
-                // is needed.
+                /*Add: if(&& System.currentTimeMillis() - gameOverTime >= 200), if game start
+                delay is needed.*/
                 if(gameOver){
 
                     reset();
                     gameOver = false;
-                    Constants.GAMEOVER = false;
+                    Constantsv1.GAMEOVER = false;
                     orientationData.newGame();
                     orientationData.register();
                 }
@@ -118,12 +169,12 @@ public class GameplayScene implements Scene{
         player.draw(canvas);
         obstacleManager.draw(canvas);
 
-        if(Constants.GAMEOVER){
+        if(Constantsv1.GAMEOVER){
 
             Paint paintHighscore = new Paint();
             paintHighscore.setTextSize(100);
             paintHighscore.setColor(Color.CYAN);
-            drawHighscoreText(canvas, paintHighscore, "Highscore: " + Constants.HIGHSCORE);
+            drawHighscoreText(canvas, paintHighscore, "Highscore: " + Constantsv1.HIGHSCORE);
 
             Paint paintGameOver = new Paint();
             paintGameOver.setTextSize(100);
@@ -143,11 +194,16 @@ public class GameplayScene implements Scene{
 
         if(!gameOver) {
 
-            if(frameTime < Constants.INIT_TIME)
-                frameTime = Constants.INIT_TIME;
+            if(frameTime < Constantsv1.INIT_TIME)
+                frameTime = Constantsv1.INIT_TIME;
 
             int elapsedTime = (int) (System.currentTimeMillis() - frameTime);
             frameTime = System.currentTimeMillis();
+
+            /*if(restore) {
+                elapsedTime = (int) (restoredCurrentTime - frameTime);
+                frameTime = restoredCurrentTime;
+            }*/
 
             if(orientationData.getOrientation() != null && orientationData.getStartOrientation()
                     != null) {
@@ -157,8 +213,8 @@ public class GameplayScene implements Scene{
                 float roll = orientationData.getOrientation()[2] - orientationData
                         .getStartOrientation()[2];
 
-                float xSpeed = 2 * roll * Constants.SCREEN_WIDTH/speed;
-                float ySpeed = pitch * Constants.SCREEN_HEIGHT/speed;
+                float xSpeed = 2 * roll * width/speed;
+                float ySpeed = pitch * height/speed;
 
                 playerPoint.x += Math.abs(xSpeed * elapsedTime) > 5 ? xSpeed * elapsedTime : 0;
                 playerPoint.y -= Math.abs(ySpeed * elapsedTime) > 5 ? ySpeed * elapsedTime : 0;
@@ -166,12 +222,12 @@ public class GameplayScene implements Scene{
 
             if(playerPoint.x < 0)
                 playerPoint.x = 0;
-            else if(playerPoint.x > Constants.SCREEN_WIDTH)
-                playerPoint.x = Constants.SCREEN_WIDTH;
+            else if(playerPoint.x > width)
+                playerPoint.x = width;
             if(playerPoint.y < 0)
                 playerPoint.y = 0;
-            else if(playerPoint.y > Constants.SCREEN_HEIGHT)
-                playerPoint.y = Constants.SCREEN_HEIGHT;
+            else if(playerPoint.y > height)
+                playerPoint.y = height;
 
 
             player.update(playerPoint);
@@ -181,7 +237,7 @@ public class GameplayScene implements Scene{
 
                 gameOver = true;
                 gameOverTime = System.currentTimeMillis();
-                Constants.GAMEOVER = true;
+                Constantsv1.GAMEOVER = true;
                 orientationData.pause();
             }
         }
@@ -235,27 +291,39 @@ public class GameplayScene implements Scene{
      */
     private void initializeObstacleManager(){
 
-        switch(Constants.DIFFICULTY){
+        switch(Constantsv1.DIFFICULTY){
             case 0:
-                obstacleManager = new ObstacleManager(400, 600, 75, Color.BLACK, 10000.0f);
+                obstacleManager = new ObstacleManager(400, 600, 75, Color.BLACK, 10000.0f, width,
+                        height);
                 speed = 1000f;
                 break;
             case 1:
-                obstacleManager = new ObstacleManager(300, 400, 75, Color.GREEN, 8000.0f);
+                obstacleManager = new ObstacleManager(300, 400, 75, Color.GREEN, 8000.0f, width,
+                        height);
                 speed = 1000f;
                 break;
             case 2:
-                obstacleManager = new ObstacleManager(250, 400, 75, Color.YELLOW, 6000.0f);
+                obstacleManager = new ObstacleManager(250, 400, 75, Color.YELLOW, 6000.0f, width,
+                        height);
                 speed = 1000f;
                 break;
             case 3:
-                obstacleManager = new ObstacleManager(200, 400, 75, Color.RED, 5000.0f);
+                obstacleManager = new ObstacleManager(200, 400, 75, Color.RED, 5000.0f, width,
+                        height);
                 speed = 800f;
                 break;
             case 4:
-                obstacleManager = new ObstacleManager(200, 400, 75, Color.WHITE, 3000.0f);
+                obstacleManager = new ObstacleManager(200, 400, 75, Color.WHITE, 3000.0f, width,
+                        height);
                 speed = 600f;
                 break;
         }
+    }
+
+    /**
+     * @return the orientationData.
+     */
+    public OrientationData getOrientationData(){
+        return orientationData;
     }
 }

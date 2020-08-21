@@ -2,14 +2,12 @@ package interactiondesign.arni0010.umu.se.a2dgame;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 /**
  * Creates a MainThread and a SceneManager to handle the view of the game and run-time.
@@ -20,7 +18,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
     private SceneManager manager;
 
-    public GamePanel(Context context){
+    public GamePanel(Context context, int width, int height){
+
+        super(context);
+        setSaveEnabled(true);
+
+        getHolder().addCallback(this);
+
+        thread = new MainThread(getHolder(), this);
+
+        manager = new SceneManager(width, height, context);
+
+        setFocusable(true);
+    }
+
+    public GamePanel(Context context, Bundle savedInstanceState){
 
         super(context);
 
@@ -28,10 +40,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
         thread = new MainThread(getHolder(), this);
 
-        manager = new SceneManager();
+        manager = new SceneManager(savedInstanceState, context);
 
         setFocusable(true);
     }
+
+    public SceneManager getSceneManager(){ return manager; }
+
+    public void getData(Bundle outState){ manager.getData(outState); }
 
     /**
      * Overrides the SurfaceViews onDraw method to take in a Canvas.
@@ -61,7 +77,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
         thread = new MainThread(getHolder(), this);
 
-        Constants.INIT_TIME = System.currentTimeMillis();
+        Constantsv1.INIT_TIME = System.currentTimeMillis();
 
         thread.setRunning(true);
         thread.start();
@@ -118,5 +134,38 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         super.draw(canvas);
 
         manager.draw(canvas);
+    }
+
+    private static class SavedState extends BaseSavedState {
+        String name;
+        int index;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            name = in.readString();
+            index = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(name);
+            out.writeInt(index);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }

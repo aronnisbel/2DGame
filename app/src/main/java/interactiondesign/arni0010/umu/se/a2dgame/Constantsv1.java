@@ -6,12 +6,10 @@ import android.content.Context;
  * Creates variables to be used at different places at different states of the app and making
  * them easy to get.
  */
-public class Constants {
+public class Constantsv1 {
 
-    public static int SCREEN_WIDTH, SCREEN_HEIGHT, HIGHSCORE, MENU_HEIGHT, CHOSEN_CHARACTER,
+    public static int HIGHSCORE, MENU_HEIGHT, CHOSEN_CHARACTER,
             DIFFICULTY;
-
-    public static Context CURRENT_CONTEXT;
 
     public static long INIT_TIME;
 

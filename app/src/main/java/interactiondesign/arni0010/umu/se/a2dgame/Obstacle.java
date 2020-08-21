@@ -3,12 +3,14 @@ package interactiondesign.arni0010.umu.se.a2dgame;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Creates an Obstacle containing two horizontally aligned Rects with a gap between them.
  */
 
-public class Obstacle implements GameObject{
+public class Obstacle implements GameObject, Parcelable {
 
     private Rect rectangle;
     private Rect rectangle2;
@@ -42,12 +44,12 @@ public class Obstacle implements GameObject{
      * @param startY The start position in Y direction (vertically).
      * @param playerGap The gap between the rectangles (horizontally).
      */
-    public Obstacle(int rectHeight, int color, int startX, int startY, int playerGap){
+    public Obstacle(int rectHeight, int color, int startX, int startY, int playerGap, int width){
 
         this.color = color;
         //left, top, right, bottom
         rectangle = new Rect(0, startY, startX, startY + rectHeight);
-        rectangle2 = new Rect(startX + playerGap, startY, Constants.SCREEN_WIDTH, startY +
+        rectangle2 = new Rect(startX + playerGap, startY, width, startY +
                 rectHeight);
     }
 
@@ -85,4 +87,35 @@ public class Obstacle implements GameObject{
     public void update() {
 
     }
+
+    protected Obstacle(Parcel in) {
+        rectangle = (Rect) in.readValue(Rect.class.getClassLoader());
+        rectangle2 = (Rect) in.readValue(Rect.class.getClassLoader());
+        color = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(rectangle);
+        dest.writeValue(rectangle2);
+        dest.writeInt(color);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Obstacle> CREATOR = new Parcelable.Creator<Obstacle>() {
+        @Override
+        public Obstacle createFromParcel(Parcel in) {
+            return new Obstacle(in);
+        }
+
+        @Override
+        public Obstacle[] newArray(int size) {
+            return new Obstacle[size];
+        }
+    };
 }

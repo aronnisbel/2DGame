@@ -2,7 +2,6 @@ package interactiondesign.arni0010.umu.se.a2dgame;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -14,6 +13,8 @@ import android.widget.LinearLayout;
  * SCREEN_HEIGHT, SCREEN_WIDTH, HIGHSCORE and GAMEOVER to later be used in the game.
  */
 public class GameActivity extends AppCompatActivity {
+
+    protected GamePanel gamePanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,36 +30,33 @@ public class GameActivity extends AppCompatActivity {
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Constants.SCREEN_WIDTH = dm.widthPixels;
-        Constants.SCREEN_HEIGHT = dm.heightPixels - getNavigationBarHeight();
-        Constants.GAMEOVER = false;
+        int width = dm.widthPixels;
+        int height = dm.heightPixels - getNavigationBarHeight();
 
-        GamePanel gamePanel = new GamePanel(this);
+        gamePanel = new GamePanel(this, width, height);
 
         ll.setOrientation(LinearLayout.VERTICAL);
 
         ll.addView(gamePanel);
         gamePanel.setVisibility(View.VISIBLE);
-
-        Constants.CURRENT_CONTEXT = this;
     }
 
     /**
-     * Saves all valuable values if the game were to stop.
+     * Saves all valuable values if the GameActivity were to get destroyed.
      * @param outState The Bundle.
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt("Highscore", Constants.HIGHSCORE);
-        outState.putInt("Character", Constants.CHOSEN_CHARACTER);
-        outState.putInt("Difficulty", Constants.DIFFICULTY);
-        outState.putInt("Width", Constants.SCREEN_WIDTH);
-        outState.putInt("Height", Constants.SCREEN_HEIGHT);
-        outState.putLong("Time", Constants.INIT_TIME);
-        outState.putBoolean("Gameover", Constants.GAMEOVER);
-        outState.putInt("Menu", Constants.MENU_HEIGHT);
+        gamePanel.getData(outState);
+        outState.putInt("Highscore", Constantsv1.HIGHSCORE);
+        outState.putInt("Character", Constantsv1.CHOSEN_CHARACTER);
+        outState.putInt("Difficulty", Constantsv1.DIFFICULTY);
+        outState.putLong("Time", Constantsv1.INIT_TIME);
+        outState.putBoolean("Gameover", Constantsv1.GAMEOVER);
+        outState.putInt("Menu", Constantsv1.MENU_HEIGHT);
+        gamePanel.getSceneManager().getGameplayScene().getOrientationData().pause();
     }
 
     /**
@@ -69,14 +67,27 @@ public class GameActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        Constants.HIGHSCORE = savedInstanceState.getInt("Highscore");
-        Constants.CHOSEN_CHARACTER = savedInstanceState.getInt("Character");
-        Constants.DIFFICULTY = savedInstanceState.getInt("Difficulty");
-        Constants.SCREEN_HEIGHT = savedInstanceState.getInt("Height");
-        Constants.SCREEN_WIDTH = savedInstanceState.getInt("Width");
-        Constants.INIT_TIME = savedInstanceState.getLong("Time");
-        Constants.GAMEOVER = savedInstanceState.getBoolean("Gameover");
-        Constants.MENU_HEIGHT = savedInstanceState.getInt("Menu");
+        gamePanel = new GamePanel(this, savedInstanceState);
+    }
+
+    /**
+     * Pauses the listeners for the sensors when the game pauses.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        gamePanel.getSceneManager().getGameplayScene().getOrientationData().pause();
+    }
+
+    /**
+     * Restarts the listeners for the sensors when the game starts after being paused.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        gamePanel.getSceneManager().getGameplayScene().getOrientationData().register();
     }
 
     /**

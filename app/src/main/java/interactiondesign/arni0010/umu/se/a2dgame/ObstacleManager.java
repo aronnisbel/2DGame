@@ -3,7 +3,7 @@ package interactiondesign.arni0010.umu.se.a2dgame;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.View;
+import android.os.Bundle;
 
 import java.util.ArrayList;
 
@@ -14,10 +14,18 @@ public class ObstacleManager {
 
     //higher index = lower on screen = higher y value
     private ArrayList<Obstacle> obstacles;
-    private int playerGap, obstacleGap, obstacleHeight, color;
-    private long startTime, initTime;
+    private int playerGap;
+    private int obstacleGap;
+    private int obstacleHeight;
+    private int width;
+    private int height;
+    private int color;
+    private long startTime;
+    private long initTime;
     private int score = 0;
     private float gameSpeed;
+    public boolean restore = false;
+    public long restoredCurrentTime = System.currentTimeMillis();
 
     /**
      * Initializes each variable with the corresponding param, sets the start time and
@@ -29,11 +37,13 @@ public class ObstacleManager {
      * @param speed The speed in which the obstacles are accelerating down the screen.
      */
     public ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight, int color, float
-            speed){
+            speed, int width, int height){
 
         this.playerGap = playerGap;
         this.obstacleGap = obstacleGap;
         this.obstacleHeight = obstacleHeight;
+        this.width = width;
+        this.height = height;
         this.color = color;
         this.gameSpeed = speed;
 
@@ -42,6 +52,67 @@ public class ObstacleManager {
         obstacles = new ArrayList<>();
 
         populateObstacles();
+    }
+
+    /**
+     * Restore the state of this class when the GameActivity has been destroyed and the re-opened.
+     * @param savedInstanceState the bundle with saved values.
+     */
+    public ObstacleManager(Bundle savedInstanceState){
+
+        this.playerGap = savedInstanceState.getInt("playerGap");
+        this.obstacleGap = savedInstanceState.getInt("obstacleGap");
+        this.obstacleHeight = savedInstanceState.getInt("obstacleHeight");
+        this.color = savedInstanceState.getInt("color");
+        this.gameSpeed = savedInstanceState.getFloat("gameSpeed");
+
+        startTime = savedInstanceState.getInt("StartTime");
+        initTime = savedInstanceState.getInt("InitTime");
+        restoredCurrentTime = savedInstanceState.getInt("RestoredCurrentTime");
+        int size = savedInstanceState.getInt("size");
+        obstacles = new ArrayList<>();
+
+        for(int i = 0 ; i < size; i++) {
+            obstacles.add((Obstacle) savedInstanceState.getParcelable("ob" + i));
+        }
+
+        update();
+    }
+
+    /**
+     * Gets all the data needed for this class to be restored if and when that happens.
+     * @param outState the bundle where all the data will be saved.
+     */
+    public void getData(Bundle outState){
+
+        outState.putInt("playerGap", playerGap);
+        outState.putInt("obstacleGap", obstacleGap);
+        outState.putInt("obstacleHeight", obstacleHeight);
+        outState.putInt("color", color);
+        outState.putFloat("gameSpeed", gameSpeed);
+        outState.putLong("startTime", startTime);
+        outState.putLong("initTime", initTime);
+        outState.putInt("size", obstacles.size());
+
+        int i=0;
+        for (Obstacle ob : obstacles){
+            outState.putParcelable("ob"+i, ob);
+            i++;
+        }
+    }
+
+    /**
+     * @return the start-time.
+     */
+    public long getStartTime(){
+        return startTime;
+    }
+
+    /**
+     * @return the initialization time.
+     */
+    public long getInitTime(){
+        return initTime;
     }
 
     /**
@@ -67,13 +138,13 @@ public class ObstacleManager {
      */
     private void populateObstacles(){
 
-        int currY = -5*Constants.SCREEN_HEIGHT/4;
+        int currY = -5* height/4;
 
-        while(currY < Constants.MENU_HEIGHT){
+        while(currY < Constantsv1.MENU_HEIGHT){
 
-            int xStart = (int)(Math.random()*(Constants.SCREEN_WIDTH - playerGap));
+            int xStart = (int)(Math.random()*(width - playerGap));
 
-            obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap));
+            obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap, width));
 
             currY += obstacleHeight + obstacleGap;
         }
@@ -86,34 +157,31 @@ public class ObstacleManager {
      */
     public void update(){
 
-        if(startTime < Constants.INIT_TIME)
-            startTime = Constants.INIT_TIME;
-
         int elapsedTime = (int)(System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
-        float speed = (float)(Math.sqrt(1 + (startTime-initTime)/2000.0))*Constants.SCREEN_HEIGHT/
+        float speed = (float)(Math.sqrt(1 + (startTime-initTime)/2000.0))* height/
                 gameSpeed;
 
         for(Obstacle ob : obstacles){
             ob.incrementY(speed * elapsedTime);
         }
 
-        if(obstacles.get(obstacles.size() - 1).getRectangle().top >= Constants.SCREEN_HEIGHT){
+        if(obstacles.get(obstacles.size() - 1).getRectangle().top >= height){
 
-            int xStart = (int)(Math.random()*(Constants.SCREEN_WIDTH - playerGap));
+            int xStart = (int)(Math.random()*(width - playerGap));
 
             obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, obstacles.get(0)
                     .getRectangle().top - obstacleHeight - obstacleGap,
-                    playerGap));
+                    playerGap, width));
 
             obstacles.remove(obstacles.size() - 1);
             score ++;
         }
 
-        if(score > Constants.HIGHSCORE){
+        if(score > Constantsv1.HIGHSCORE){
 
-            Constants.HIGHSCORE = score;
+            Constantsv1.HIGHSCORE = score;
         }
 
     }

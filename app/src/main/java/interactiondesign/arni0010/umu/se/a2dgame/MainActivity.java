@@ -1,6 +1,5 @@
 package interactiondesign.arni0010.umu.se.a2dgame;
 
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
@@ -37,18 +36,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        if(savedInstanceState != null) {
-
-            Constants.HIGHSCORE = savedInstanceState.getInt("Highscore");
-            Constants.CHOSEN_CHARACTER = savedInstanceState.getInt("Character");
-            Constants.DIFFICULTY = savedInstanceState.getInt("Difficulty");
-            Constants.SCREEN_HEIGHT = savedInstanceState.getInt("Height");
-            Constants.SCREEN_WIDTH = savedInstanceState.getInt("Width");
-            Constants.INIT_TIME = savedInstanceState.getLong("Time");
-            Constants.GAMEOVER = savedInstanceState.getBoolean("Gameover");
-            Constants.MENU_HEIGHT = savedInstanceState.getInt("Menu");
-        }
 
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: Starting.");
@@ -115,8 +102,6 @@ public class MainActivity extends AppCompatActivity {
         setDifficulty();
 
         item = bottomNavigationView.getMenu().findItem(R.id.navigation_difficulty);
-
-        Constants.CURRENT_CONTEXT = this;
     }
 
     /**
@@ -127,14 +112,10 @@ public class MainActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt("Highscore", Constants.HIGHSCORE);
-        outState.putInt("Character", Constants.CHOSEN_CHARACTER);
-        outState.putInt("Difficulty", Constants.DIFFICULTY);
-        outState.putInt("Width", Constants.SCREEN_WIDTH);
-        outState.putInt("Height", Constants.SCREEN_HEIGHT);
-        outState.putLong("Time", Constants.INIT_TIME);
-        outState.putBoolean("Gameover", Constants.GAMEOVER);
-        outState.putInt("Menu", Constants.MENU_HEIGHT);
+        outState.putInt("Highscore", Constantsv1.HIGHSCORE);
+        outState.putInt("Character", Constantsv1.CHOSEN_CHARACTER);
+        outState.putInt("Difficulty", Constantsv1.DIFFICULTY);
+        outState.putInt("Menu", Constantsv1.MENU_HEIGHT);
     }
 
     /**
@@ -145,14 +126,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        Constants.HIGHSCORE = savedInstanceState.getInt("Highscore");
-        Constants.CHOSEN_CHARACTER = savedInstanceState.getInt("Character");
-        Constants.DIFFICULTY = savedInstanceState.getInt("Difficulty");
-        Constants.SCREEN_HEIGHT = savedInstanceState.getInt("Height");
-        Constants.SCREEN_WIDTH = savedInstanceState.getInt("Width");
-        Constants.INIT_TIME = savedInstanceState.getLong("Time");
-        Constants.GAMEOVER = savedInstanceState.getBoolean("Gameover");
-        Constants.MENU_HEIGHT = savedInstanceState.getInt("Menu");
+        Constantsv1.HIGHSCORE = savedInstanceState.getInt("Highscore");
+        Constantsv1.CHOSEN_CHARACTER = savedInstanceState.getInt("Character");
+        Constantsv1.DIFFICULTY = savedInstanceState.getInt("Difficulty");
+        Constantsv1.MENU_HEIGHT = savedInstanceState.getInt("Menu");
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+
+        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation);
     }
 
     /**
@@ -175,9 +156,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setDifficultyIcon(){
 
-        Log.d(TAG, "Difficulty: " + Constants.DIFFICULTY);
+        Log.d(TAG, "Difficulty: " + Constantsv1.DIFFICULTY);
 
-        switch(Constants.DIFFICULTY){
+        switch(Constantsv1.DIFFICULTY){
             case 0:
                 item.setIcon(R.drawable.easy);
                 break;
@@ -202,11 +183,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setDifficulty(){
 
-        if(Constants.DIFFICULTY != 0 && Constants.DIFFICULTY != 1 && Constants
-                .DIFFICULTY != 2 && Constants.DIFFICULTY != 3 && Constants
+        if(Constantsv1.DIFFICULTY != 0 && Constantsv1.DIFFICULTY != 1 && Constantsv1
+                .DIFFICULTY != 2 && Constantsv1.DIFFICULTY != 3 && Constantsv1
                 .DIFFICULTY != 4){
 
-            Constants.DIFFICULTY = 0;
+            Constantsv1.DIFFICULTY = 0;
         }
     }
 
@@ -215,11 +196,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setChosenCharacter(){
 
-        if(Constants.CHOSEN_CHARACTER != 0 && Constants.CHOSEN_CHARACTER != 1 && Constants
-                .CHOSEN_CHARACTER != 2 && Constants.CHOSEN_CHARACTER != 3 && Constants
+        if(Constantsv1.CHOSEN_CHARACTER != 0 && Constantsv1.CHOSEN_CHARACTER != 1 && Constantsv1
+                .CHOSEN_CHARACTER != 2 && Constantsv1.CHOSEN_CHARACTER != 3 && Constantsv1
                 .CHOSEN_CHARACTER != 4){
 
-            Constants.CHOSEN_CHARACTER = 0;
+            Constantsv1.CHOSEN_CHARACTER = 0;
         }
     }
 }

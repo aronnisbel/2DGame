@@ -4,12 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by ar0n_ on 12/03/2018.
  */
 
-public class Animation {
+public class Animation implements Parcelable {
 
     private Bitmap[] frames;
     private int frameIndex;
@@ -74,4 +76,39 @@ public class Animation {
             lastFrame = System.currentTimeMillis();
         }
     }
+
+    protected Animation(Parcel in) {
+        frames = (Bitmap[]) in.readValue(Bitmap[].class.getClassLoader());
+        frameIndex = in.readInt();
+        isPlaying = in.readByte() != 0x00;
+        framTime = in.readFloat();
+        lastFrame = in.readLong();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(frames);
+        dest.writeInt(frameIndex);
+        dest.writeByte((byte) (isPlaying ? 0x01 : 0x00));
+        dest.writeFloat(framTime);
+        dest.writeLong(lastFrame);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Animation> CREATOR = new Parcelable.Creator<Animation>() {
+        @Override
+        public Animation createFromParcel(Parcel in) {
+            return new Animation(in);
+        }
+
+        @Override
+        public Animation[] newArray(int size) {
+            return new Animation[size];
+        }
+    };
 }

@@ -42,11 +42,15 @@ public class OrientationData implements SensorEventListener{
     /**
      * Initializes the SensorManager and the sensors, Accelerometer and Magnometer.
      */
-    public OrientationData(){
+    public OrientationData(Context context){
 
-        manager = (SensorManager)Constants.CURRENT_CONTEXT.getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magnometer = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        try {
+            manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+            accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            magnometer = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        }catch(NullPointerException e){
+            e.getMessage();
+        }
     }
 
     /**
