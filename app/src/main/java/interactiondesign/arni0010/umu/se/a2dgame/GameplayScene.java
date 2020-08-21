@@ -42,8 +42,7 @@ public class GameplayScene implements Scene {
         player = new RectPlayer(new Rect(100, 100, 200, 200), context);
         playerPoint = new Point(width/2, 3* height/4);
         player.update(playerPoint);
-
-        highscore = Constants.HIGHSCORE;
+        
         Constants.GAMEOVER = false;
 
         speed = 0;
@@ -69,7 +68,6 @@ public class GameplayScene implements Scene {
         playerPoint = new Point(x, y);
         player.update(playerPoint);
 
-        highscore = Constants.HIGHSCORE;
         gameOver = true;
 
         speed = 0;
@@ -170,7 +168,7 @@ public class GameplayScene implements Scene {
             Paint paintHighscore = new Paint();
             paintHighscore.setTextSize(100);
             paintHighscore.setColor(Color.CYAN);
-            drawText(canvas, paintHighscore, "Highscore: " + highscore, -300);
+            drawText(canvas, paintHighscore, "Highscore: " + Constants.HIGHSCORE, -300);
 
             Paint paintGameOver = new Paint();
             paintGameOver.setTextSize(100);
