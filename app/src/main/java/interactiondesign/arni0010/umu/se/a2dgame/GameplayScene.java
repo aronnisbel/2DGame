@@ -26,8 +26,6 @@ public class GameplayScene implements Scene {
     private long frameTime;
     private float speed;
 
-    public long restoredCurrentTime;
-
     private int width;
     private int height;
     private int highscore;
@@ -46,6 +44,7 @@ public class GameplayScene implements Scene {
         player.update(playerPoint);
 
         highscore = Constants.HIGHSCORE;
+        Constants.GAMEOVER = false;
 
         speed = 0;
 
@@ -58,18 +57,20 @@ public class GameplayScene implements Scene {
 
     /**
      * Restores the state of the class.
+     * @param savedInstanceState the bundle with the saved data in it.
+     * @param context the current context.
      */
     public GameplayScene(Bundle savedInstanceState, Context context){
         
         int x = savedInstanceState.getInt("PlayerX");
         int y = savedInstanceState.getInt("PlayerY");
-        restoredCurrentTime = savedInstanceState.getLong("RestoredCurrentTime");
 
         player = new RectPlayer((Rect)savedInstanceState.getParcelable("Rect"), context);
         playerPoint = new Point(x, y);
         player.update(playerPoint);
 
         highscore = Constants.HIGHSCORE;
+        gameOver = true;
 
         speed = 0;
 
@@ -164,7 +165,7 @@ public class GameplayScene implements Scene {
         player.draw(canvas);
         obstacleManager.draw(canvas);
 
-        if(Constants.GAMEOVER){
+        if(gameOver){
 
             Paint paintHighscore = new Paint();
             paintHighscore.setTextSize(100);
